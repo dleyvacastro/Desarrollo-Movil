@@ -21,7 +21,7 @@ class GameController extends GetxController {
   var currentCows = [].obs;
   var hintUsed = false;
 
-  var myhomeReset = (){}.obs;
+  var myhomeReset = () {}.obs;
 
   void setMode(int value) {
     mode = value;
@@ -32,7 +32,11 @@ class GameController extends GetxController {
   }
 
   void setDifficulty(int value) {
-    currentGame = difficulty == 1 ? "***" : difficulty == 2 ? "****" : "*****";
+    currentGame = difficulty == 1
+        ? "***"
+        : difficulty == 2
+            ? "****"
+            : "*****";
     difficulty = value;
   }
 
@@ -40,22 +44,37 @@ class GameController extends GetxController {
     currentGame = text;
   }
 
-  int getTries(){
+  int getTries() {
     return triesCount;
   }
 
+  String getCurrPlayer() {
+    return currPlayer;
+  }
+
   String getMode() {
-    return mode == 3 ? "Seleccione un modo" : mode == 1 ? "Solitario" : "Versus";
+    return mode == 3
+        ? "Seleccione un modo"
+        : mode == 1
+            ? "Solitario"
+            : "Versus";
   }
 
   String getDifficulty() {
-    return difficulty == 0 ? "Seleccione una dificultad" : difficulty == 1 ? "Facil" : difficulty == 2 ? "Medio" : "Dificil";
+    return difficulty == 0
+        ? "Seleccione una dificultad"
+        : difficulty == 1
+            ? "Facil"
+            : difficulty == 2
+                ? "Medio"
+                : "Dificil";
   }
 
   void validateGame() {
     triesCount = 0;
     setDifficulty(difficulty);
-    if (mode == 1) { // solitaio
+    if (mode == 1) {
+      // solitaio
       if (difficulty == 0) {
         Get.snackbar("Error", "Seleccione una dificultad");
       } else {
@@ -63,7 +82,8 @@ class GameController extends GetxController {
         print(number);
         Get.to(() => Game());
       }
-    } else if (mode == 2) { // versus
+    } else if (mode == 2) {
+      // versus
       Get.to(() => SelectNumber());
     } else {
       Get.snackbar("Error", "Seleccione un modo");
@@ -107,7 +127,6 @@ class GameController extends GetxController {
       }
       number += newNumber.toString();
     }
-
   }
 
   void resetGame() {
@@ -116,17 +135,19 @@ class GameController extends GetxController {
     cowsScore = 0;
     bullsScore = 0;
     currPlayer = currPlayer == "A" ? "B" : "A";
+    currentCows.value = [];
   }
 
-  String getWinner(){
-    if (playerAScore.value > playerBScore.value) {
+  String getWinner() {
+    if (bPrevTries.value > aPrevTries.value) {
       return "A";
-    } else if (playerAScore.value < playerBScore.value) {
+    } else if (bPrevTries.value < aPrevTries.value) {
       return "B";
     } else {
       return "Empate";
     }
   }
+
   bool validateVersus(String userNumber) {
     cowsScore = 0;
     bullsScore = 0;
@@ -142,7 +163,7 @@ class GameController extends GetxController {
             } else {
               if (userNumber[i] == number[j]) {
                 cowsScore++;
-                if (!currentCows.value.contains(userNumber[i])){
+                if (!currentCows.value.contains(userNumber[i])) {
                   currentCows.value.add(userNumber[i]);
                 }
               }
@@ -154,26 +175,26 @@ class GameController extends GetxController {
         Get.snackbar("Error", "El numero debe tener ${number.length} digitos");
       }
     } else {
-      Get.snackbar("Error", "El numero no puede tener digitos repetidos y debe tener entre 3 y 5 digitos");
+      Get.snackbar("Error",
+          "El numero no puede tener digitos repetidos y debe tener entre 3 y 5 digitos");
     }
 
     if (bullsScore == number.length) {
       startedVersus.value = startedVersus.value ? false : true;
-      print("vs $startedVersus");
       if (currPlayer == "A") {
         bPrevTries.value = triesCount;
       } else {
         aPrevTries.value = triesCount;
       }
       if (startedVersus.value) {
-         if (aPrevTries.value < bPrevTries.value) {
-           playerAScore.value++;
-         } else if (aPrevTries.value > bPrevTries.value) {
-           playerBScore.value++;
-         } else if (aPrevTries.value == bPrevTries.value) {
-           playerAScore.value++;
-           playerBScore.value++;
-         }
+        if (aPrevTries.value < bPrevTries.value) {
+          playerAScore.value++;
+        } else if (aPrevTries.value > bPrevTries.value) {
+          playerBScore.value++;
+        } else if (aPrevTries.value == bPrevTries.value) {
+          playerAScore.value++;
+          playerBScore.value++;
+        }
       }
       resetGame();
       myhomeReset.value();
@@ -193,7 +214,4 @@ class GameController extends GetxController {
       }
     }
   }
-
-
 }
-

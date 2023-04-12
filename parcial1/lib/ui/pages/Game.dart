@@ -10,7 +10,6 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
-
   GameController controller = Get.find();
   final TextEditingController _controller = TextEditingController();
 
@@ -18,23 +17,22 @@ class _GameState extends State<Game> {
     showDialog<String>(
         context: context,
         builder: (BuildContext context) => Dialog(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const SizedBox(height: 15),
-              Text(message),
-              const SizedBox(height: 15),
-              TextButton(
-                onPressed: () {
-                  Get.offAllNamed('/');
-                },
-                child: const Text('Volver al inicio'),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const SizedBox(height: 15),
+                  Text(message),
+                  const SizedBox(height: 15),
+                  TextButton(
+                    onPressed: () {
+                      Get.offAllNamed('/');
+                    },
+                    child: const Text('Volver al inicio'),
+                  ),
+                ],
               ),
-            ],
-          ),
-        )
-    );
+            ));
   }
 
   @override
@@ -45,101 +43,96 @@ class _GameState extends State<Game> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-          appBar: AppBar(
-            title: Text(controller.getMode() == '1' ? 'Solitario' : 'Versus'),
-          ),
-          body: Center(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.all(10),
-                      child: Text(
-                        'Puntos: ${controller.cowsScore}',
-                        style: const TextStyle(fontSize: 40),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.all(10),
-                      child: Text(
-                        'Famas: ${controller.bullsScore}',
-                        style: const TextStyle(fontSize: 40),
-                      ),
-                    ),
-                  ]
+        appBar: AppBar(
+          title: Text(controller.getMode() == '1' ? 'Solitario' : 'Versus - Jugador ${controller.getCurrPlayer() == "A" ? "B":"A"}'),
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              Row(children: [
+                Container(
+                  margin: const EdgeInsets.all(10),
+                  child: Text(
+                    'Puntos: ${controller.cowsScore}',
+                    style: const TextStyle(fontSize: 40),
+                  ),
                 ),
                 Container(
                   margin: const EdgeInsets.all(10),
                   child: Text(
-                    'Intentos: ${controller.getTries()}',
-                    style: const TextStyle(fontSize: 30),
+                    'Famas: ${controller.bullsScore}',
+                    style: const TextStyle(fontSize: 40),
                   ),
                 ),
-                Row(
-                  children: List.generate(controller.number.length, (index) {
-                    setState(() {
-
-                    });
-                    return Container(
-                      margin: const EdgeInsets.all(10),
-                      child: Text(
-                        controller.currentGame[index],
-                        style: const TextStyle(fontSize: 50),
-                      ),
-                    );
-                  }),
+              ]),
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: Text(
+                  'Intentos: ${controller.getTries()}',
+                  style: const TextStyle(fontSize: 30),
                 ),
-                TextField(
+              ),
+              Row(
+                children: List.generate(controller.number.length, (index) {
+                  setState(() {});
+                  return Container(
+                    margin: const EdgeInsets.all(10),
+                    child: Text(
+                      controller.currentGame[index],
+                      style: const TextStyle(fontSize: 50),
+                    ),
+                  );
+                }),
+              ),
+              Container(
+                margin: const EdgeInsets.all(10),
+                child:TextField(
                   controller: _controller,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     hintText: 'Ingrese un numero (no digitos repetidos)',
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                      var win = controller.validateVersus(_controller.text);
+                )
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  var win = controller.validateVersus(_controller.text);
 
-                      if (win) {
-                        print('Ganaste');
-                        if (controller.startedVersus.value){
-                          showInvalidDialog(context, "Ganaste en ${controller.getTries()}");
-                        }else{
-                          showInvalidDialog(context, "Ganaste en ${controller.getTries()}\nGanador Jugador ${controller.getWinner()}");
-                        }
-                      }else{
-                        setState(() {
-
-                        });
-                      }
-                  },
-                  child: const Text('Probar'),
-                ),
-                ElevatedButton(
+                  if (win) {
+                    if (controller.startedVersus.value) {
+                      showInvalidDialog(
+                          context, "Ganaste en ${controller.getTries()}");
+                    } else {
+                      showInvalidDialog(context,
+                          "Ganaste en ${controller.getTries()}\nGanador Jugador ${controller.getWinner()}");
+                    }
+                  } else {
+                    setState(() {});
+                  }
+                },
+                child: const Text('Probar'),
+              ),
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: ElevatedButton(
                   onPressed: () {
                     controller.useHint();
-                    setState(() {
-
-                    });
+                    setState(() {});
                   },
-                  child: const Text('HINT'),
+                  child: const Text('PISTA'),
                 ),
+              ),
 
-                Container(
-                  margin: const EdgeInsets.all(10),
-                  child: Text(
-                    'Puntos: ${controller.currentCows.value}',
-                    style: const TextStyle(fontSize: 20),
-                  ),
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: Text(
+                  'Puntos: ${controller.currentCows.value}',
+                  style: const TextStyle(fontSize: 20),
                 ),
-
-
-              ],
-            ),
-          )
-      );
+              ),
+            ],
+          ),
+        ));
   }
 }
