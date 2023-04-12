@@ -5,5 +5,5 @@ import 'package:get/get.dart';
 
 void main() {
   Get.lazyPut<GameController>(() => GameController());
-  runApp(App());
+  runApp(MyHome());
 }

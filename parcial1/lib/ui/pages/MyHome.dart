@@ -4,17 +4,18 @@ import 'package:get/get.dart';
 import '../controller/GameController.dart';
 import 'Game.dart';
 
-class App extends StatefulWidget {
+class MyHome extends StatefulWidget {
   @override
-  State<App> createState() => _AppState();
+  State<MyHome> createState() => _AppState();
 }
 
-class _AppState extends State<App> {
+class _AppState extends State<MyHome> {
 
   GameController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
+    controller.myhomeReset.value = (){setState(() { });};
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -38,17 +39,32 @@ class _AppState extends State<App> {
                   style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold, color: Colors.blue),
                 ),
               ),
+              controller.startedVersus.value ? Container(
+                child: Text("Intentos utilizados: ${controller.getTries()}"),
+              ) : Container(),
               DropdownButton(
-                items: const [
-                  DropdownMenuItem(
+                items: !controller.startedVersus.value ? [
+                  // if not controller.startedVersus show solitario option
+
+                  const DropdownMenuItem(
                     value: 1,
                     child: Text('Solitario'),
                   ),
-                  DropdownMenuItem(
+                  const DropdownMenuItem(
                     value: 2,
                     child: Text('Versus'),
                   ),
-                ],
+
+                ] : [
+                  // if not controller.startedVersus show solitario option
+
+                  const DropdownMenuItem(
+                    value: 2,
+                    child: Text('Versus'),
+                  ),
+
+                ]
+                ,
                 onChanged: (value) {
                   controller.setMode(value as int);
                   setState(() {
