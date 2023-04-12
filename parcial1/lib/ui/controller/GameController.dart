@@ -73,6 +73,7 @@ class GameController extends GetxController {
   void validateGame() {
     triesCount = 0;
     setDifficulty(difficulty);
+    setMode(mode);
     if (mode == 1) {
       // solitaio
       if (difficulty == 0) {
@@ -180,7 +181,10 @@ class GameController extends GetxController {
     }
 
     if (bullsScore == number.length) {
-      startedVersus.value = startedVersus.value ? false : true;
+      if (mode == 2){
+        startedVersus.value = startedVersus.value ? false : true;
+      }
+
       if (currPlayer == "A") {
         bPrevTries.value = triesCount;
       } else {

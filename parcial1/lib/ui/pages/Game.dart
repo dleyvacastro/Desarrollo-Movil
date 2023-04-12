@@ -100,7 +100,7 @@ class _GameState extends State<Game> {
                   var win = controller.validateVersus(_controller.text);
 
                   if (win) {
-                    if (controller.startedVersus.value) {
+                    if (controller.startedVersus.value || controller.getMode() == 'Solitario') {
                       showInvalidDialog(
                           context, "Ganaste en ${controller.getTries()}");
                     } else {
