@@ -20,6 +20,7 @@ class GameController extends GetxController {
   var startedVersus = false.obs;
   var currentCows = [].obs;
   var hintUsed = false;
+  var gameLength = 0.obs;
 
   var myhomeReset = () {}.obs;
 
@@ -93,9 +94,10 @@ class GameController extends GetxController {
 
   bool validateNumber(String userNumber) {
     var valid = true;
-    if (userNumber.length > 5 || userNumber.length < 3) {
-      valid = false;
+    if (userNumber.length > 5 || userNumber.length < 3 || (startedVersus.value && userNumber.length != gameLength.value)) {
+      return false;
     }
+    gameLength.value = userNumber.length;
     for (var i = 0; i < userNumber.length; i++) {
       for (var j = 0; j < userNumber.length; j++) {
         if (i != j) {

@@ -45,9 +45,9 @@ class _SelectNumberState extends State<SelectNumber> {
                   controller.setCurrentGame("*" * _controller.text.length);
                   Get.to(() => Game());
                 } else {
-                  Get.snackbar('Error',
+                  !controller.startedVersus.value ? Get.snackbar('Error',
                       'El numero no puede tener digitos repetidos y debe tener entre 3 y 5 digitos',
-                      snackPosition: SnackPosition.BOTTOM);
+                      snackPosition: SnackPosition.BOTTOM) : Get.snackbar('Error','El numero debe tener ${controller.gameLength.value} digitos');
                 }
               },
               child: const Text('Start Game'),
