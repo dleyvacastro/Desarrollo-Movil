@@ -62,13 +62,29 @@ class GameController extends GetxController {
   }
 
   String getDifficulty() {
-    return difficulty == 0
-        ? "Seleccione una dificultad"
-        : difficulty == 1
-            ? "Facil"
-            : difficulty == 2
-                ? "Medio"
-                : "Dificil";
+    // return difficulty == 0
+    //     ? "Seleccione una dificultad"
+    //     : difficulty == 1
+    //         ? "Facil"
+    //         : difficulty == 2
+    //             ? "Medio"
+    //             : "Dificil";
+
+    switch (difficulty){
+      case 0:
+        return "Seleccione una dificultad";
+      case 1:
+        return "Facil";
+      case 2:
+        return "Medio";
+      case 3:
+        return "Dificil";
+      case 4:
+        return "Letal";
+      default:
+        return "Seleccione una dificultad";
+    }
+
   }
 
   void validateGame() {
@@ -151,6 +167,30 @@ class GameController extends GetxController {
     }
   }
 
+  void winHandler(){
+    if (mode == 2){
+      startedVersus.value = startedVersus.value ? false : true;
+    }
+
+    if (currPlayer == "A") {
+      bPrevTries.value = triesCount;
+    } else {
+      aPrevTries.value = triesCount;
+    }
+    if (startedVersus.value) {
+      if (aPrevTries.value < bPrevTries.value) {
+        playerAScore.value++;
+      } else if (aPrevTries.value > bPrevTries.value) {
+        playerBScore.value++;
+      } else if (aPrevTries.value == bPrevTries.value) {
+        playerAScore.value++;
+        playerBScore.value++;
+      }
+    }
+    resetGame();
+    myhomeReset.value();
+  }
+
   bool validateVersus(String userNumber) {
     cowsScore = 0;
     bullsScore = 0;
@@ -183,41 +223,28 @@ class GameController extends GetxController {
     }
 
     if (bullsScore == number.length) {
-      if (mode == 2){
-        startedVersus.value = startedVersus.value ? false : true;
-      }
-
-      if (currPlayer == "A") {
-        bPrevTries.value = triesCount;
-      } else {
-        aPrevTries.value = triesCount;
-      }
-      if (startedVersus.value) {
-        if (aPrevTries.value < bPrevTries.value) {
-          playerAScore.value++;
-        } else if (aPrevTries.value > bPrevTries.value) {
-          playerBScore.value++;
-        } else if (aPrevTries.value == bPrevTries.value) {
-          playerAScore.value++;
-          playerBScore.value++;
-        }
-      }
-      resetGame();
-      myhomeReset.value();
+      winHandler();
       return true;
     }
     return false;
   }
 
-  void useHint() {
+  bool useHint() {
     hintUsed = true;
 
     for (var i = 0; i < number.length; i++) {
       if (!currentGame.contains(number[i])) {
         currentGame = currentGame.replaceRange(i, i + 1, number[i]);
         triesCount += 5;
+        // if current game not contains * then return true
+        if (!currentGame.contains("*")) {
+          winHandler();
+          return true;
+        }
         break;
       }
     }
+    return false;
   }
+
 }

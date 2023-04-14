@@ -117,7 +117,16 @@ class _GameState extends State<Game> {
                 margin: const EdgeInsets.all(10),
                 child: ElevatedButton(
                   onPressed: () {
-                    controller.useHint();
+                    var winHint = controller.useHint();
+                    if (winHint) {
+                      if (controller.startedVersus.value || controller.getMode() == 'Solitario') {
+                        showInvalidDialog(
+                            context, "Ganaste en ${controller.getTries()}");
+                      } else {
+                        showInvalidDialog(context,
+                            "Ganaste en ${controller.getTries()}\nGanador Jugador ${controller.getWinner()}");
+                      }
+                    }
                     setState(() {});
                   },
                   child: const Text('PISTA'),
