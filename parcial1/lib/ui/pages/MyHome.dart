@@ -53,7 +53,6 @@ class _AppState extends State<MyHome> {
                       child: DropdownButton(
                         items: !controller.startedVersus.value
                             ? [
-
                                 const DropdownMenuItem(
                                   value: 1,
                                   child: Text('Solitario'),
@@ -64,7 +63,6 @@ class _AppState extends State<MyHome> {
                                 ),
                               ]
                             : [
-
                                 const DropdownMenuItem(
                                   value: 2,
                                   child: Text('Versus'),
@@ -90,6 +88,10 @@ class _AppState extends State<MyHome> {
                             DropdownMenuItem(
                               value: 3,
                               child: Text('Dificil'),
+                            ),
+                            DropdownMenuItem(
+                              value: 4,
+                              child: Text('Letal'),
                             ),
                           ],
                           onChanged: (value) {

@@ -21,15 +21,17 @@ class GameController extends GetxController {
   var currentCows = [].obs;
   var hintUsed = false;
   var gameLength = 0.obs;
+  var symbolLength = 0;
 
   var myhomeReset = () {}.obs;
+  var symbolPool = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
 
   void setMode(int value) {
     mode = value;
   }
 
   void setNumber(String text) {
-    number = text;
+    number = formatNumber(text);
   }
 
   void setDifficulty(int value) {
@@ -70,7 +72,7 @@ class GameController extends GetxController {
     //             ? "Medio"
     //             : "Dificil";
 
-    switch (difficulty){
+    switch (difficulty) {
       case 0:
         return "Seleccione una dificultad";
       case 1:
@@ -84,7 +86,6 @@ class GameController extends GetxController {
       default:
         return "Seleccione una dificultad";
     }
-
   }
 
   void validateGame() {
@@ -108,9 +109,29 @@ class GameController extends GetxController {
     }
   }
 
+  String formatNumber(String userNumber) {
+    for (var i = 0; i < userNumber.length; i++) {
+      if (userNumber[i].codeUnitAt(0) >= 97 &&
+          userNumber[i].codeUnitAt(0) <= 122) {
+        userNumber = userNumber.replaceRange(
+            i, i + 1, String.fromCharCode(userNumber[i].codeUnitAt(0) - 32));
+      }
+    }
+    return userNumber;
+  }
+
   bool validateNumber(String userNumber) {
+
     var valid = true;
-    if (userNumber.length > 5 || userNumber.length < 3 || (startedVersus.value && userNumber.length != gameLength.value)) {
+    userNumber = formatNumber(userNumber);
+    for (var i = 0; i < userNumber.length; i++) {
+      if (!symbolPool.contains(userNumber[i])) {
+        return false;
+      }
+    }
+    if (userNumber.length > 5 ||
+        userNumber.length < 3 ||
+        (startedVersus.value && userNumber.length != gameLength.value)) {
       return false;
     }
     gameLength.value = userNumber.length;
@@ -132,17 +153,25 @@ class GameController extends GetxController {
 
     if (difficulty == 1) {
       itertimes = 3;
+      symbolLength = 10;
     } else if (difficulty == 2) {
       itertimes = 4;
+      symbolLength = 10;
     } else if (difficulty == 3) {
       itertimes = 5;
+      symbolLength = 10;
+    } else if (difficulty == 4) {
+      itertimes = 5;
+      symbolLength = 16;
     }
     number = "";
 
     for (var i = 0; i < itertimes; i++) {
-      var newNumber = rng.nextInt(10);
+      // var newNumber = rng.nextInt(10);
+      // choose a random element of symbolPool
+      var newNumber = symbolPool[rng.nextInt(symbolLength)];
       while (number.contains(newNumber.toString())) {
-        newNumber = rng.nextInt(10);
+        newNumber = symbolPool[rng.nextInt(symbolLength)];
       }
       number += newNumber.toString();
     }
@@ -155,6 +184,7 @@ class GameController extends GetxController {
     bullsScore = 0;
     currPlayer = currPlayer == "A" ? "B" : "A";
     currentCows.value = [];
+    symbolPool = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
   }
 
   String getWinner() {
@@ -167,8 +197,8 @@ class GameController extends GetxController {
     }
   }
 
-  void winHandler(){
-    if (mode == 2){
+  void winHandler() {
+    if (mode == 2) {
       startedVersus.value = startedVersus.value ? false : true;
     }
 
@@ -191,7 +221,8 @@ class GameController extends GetxController {
     myhomeReset.value();
   }
 
-  bool validateVersus(String userNumber) {
+  bool gameHandler(String userNumber) {
+    userNumber = formatNumber(userNumber);
     cowsScore = 0;
     bullsScore = 0;
     if (validateNumber(userNumber)) {
@@ -246,5 +277,4 @@ class GameController extends GetxController {
     }
     return false;
   }
-
 }

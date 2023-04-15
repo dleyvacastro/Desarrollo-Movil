@@ -23,6 +23,7 @@ class _SelectNumberState extends State<SelectNumber> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Elige un Número Jugador ${controller.getCurrPlayer()}'),
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Column(
@@ -31,7 +32,7 @@ class _SelectNumberState extends State<SelectNumber> {
               margin: const EdgeInsets.all(10),
               child: TextField(
                 controller: _controller,
-                keyboardType: TextInputType.number,
+                // keyboardType: controller.getDifficulty() != "Letal" ?  TextInputType.number : TextInputType.text,
                 decoration: const InputDecoration(
                   hintText: 'Ingrese un numero (no digitos repetidos)',
                 ),
@@ -43,6 +44,8 @@ class _SelectNumberState extends State<SelectNumber> {
                 if (controller.validateNumber(_controller.text)) {
                   controller.setNumber(_controller.text);
                   controller.setCurrentGame("*" * _controller.text.length);
+                  print("dificultad: ${controller.getDifficulty()}");
+                  print("mode ${controller.getMode()}");
                   Get.to(() => Game());
                 } else {
                   !controller.startedVersus.value ? Get.snackbar('Error',

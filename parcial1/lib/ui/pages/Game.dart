@@ -45,10 +45,13 @@ class _GameState extends State<Game> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(controller.getMode() == '1' ? 'Solitario' : 'Versus - Jugador ${controller.getCurrPlayer() == "A" ? "B":"A"}'),
+          title: Text(controller.getMode() == 'Solitario'
+              ? 'Solitario'
+              : 'Versus - Jugador ${controller.getCurrPlayer() == "A" ? "B" : "A"}'),
+          automaticallyImplyLeading: false,
         ),
         body: Center(
-          child: Column(
+          child: ListView(
             children: [
               Row(children: [
                 Container(
@@ -86,40 +89,49 @@ class _GameState extends State<Game> {
                 }),
               ),
               Container(
-                margin: const EdgeInsets.all(10),
-                child:TextField(
-                  controller: _controller,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    hintText: 'Ingrese un numero (no digitos repetidos)',
-                  ),
-                )
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  var win = controller.validateVersus(_controller.text);
+                  margin: const EdgeInsets.all(10),
+                  child: TextField(
+                    controller: _controller,
+                    // keyboardType: controller.getDifficulty() != "Letal" || controller.getMode() == 'Solitario'
+                    //     ? TextInputType.number
+                    //     : TextInputType.text,
 
-                  if (win) {
-                    if (controller.startedVersus.value || controller.getMode() == 'Solitario') {
-                      showInvalidDialog(
-                          context, "Ganaste en ${controller.getTries()}");
-                    } else {
-                      showInvalidDialog(context,
-                          "Ganaste en ${controller.getTries()}\nGanador Jugador ${controller.getWinner()}");
-                    }
-                  } else {
-                    setState(() {});
-                  }
-                },
-                child: const Text('Probar'),
-              ),
+                    keyboardType: controller.getMode() == 'Versus' || controller.getDifficulty() == "Letal"
+                        ? TextInputType.text
+                        : TextInputType.number,
+                    decoration: const InputDecoration(
+                      hintText: 'Ingrese un numero (no digitos repetidos)',
+                    ),
+                  )),
+              Container(
+                  margin: const EdgeInsets.all(10),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      var win = controller.gameHandler(_controller.text);
+
+                      if (win) {
+                        if (controller.startedVersus.value ||
+                            controller.getMode() == 'Solitario') {
+                          showInvalidDialog(
+                              context, "Ganaste en ${controller.getTries()}");
+                        } else {
+                          showInvalidDialog(context,
+                              "Ganaste en ${controller.getTries()}\nGanador Jugador ${controller.getWinner()}");
+                        }
+                      } else {
+                        setState(() {});
+                      }
+                    },
+                    child: const Text('Probar'),
+                  )),
               Container(
                 margin: const EdgeInsets.all(10),
                 child: ElevatedButton(
                   onPressed: () {
                     var winHint = controller.useHint();
                     if (winHint) {
-                      if (controller.startedVersus.value || controller.getMode() == 'Solitario') {
+                      if (controller.startedVersus.value ||
+                          controller.getMode() == 'Solitario') {
                         showInvalidDialog(
                             context, "Ganaste en ${controller.getTries()}");
                       } else {
@@ -132,7 +144,6 @@ class _GameState extends State<Game> {
                   child: const Text('PISTA'),
                 ),
               ),
-
               Container(
                 margin: const EdgeInsets.all(10),
                 child: Text(
