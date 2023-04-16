@@ -14,7 +14,7 @@ class _AppState extends State<MyHome> {
 
   @override
   Widget build(BuildContext context) {
-    controller.myhomeReset.value = () {
+    controller.myhomeSetState.value = () {
       setState(() {});
     };
 

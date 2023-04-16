@@ -38,19 +38,19 @@ class _SelectNumberState extends State<SelectNumber> {
                 ),
               ),
             ),
-
             ElevatedButton(
               onPressed: () {
                 if (controller.validateNumber(_controller.text)) {
                   controller.setNumber(_controller.text);
                   controller.setCurrentGame("*" * _controller.text.length);
-                  print("dificultad: ${controller.getDifficulty()}");
-                  print("mode ${controller.getMode()}");
                   Get.to(() => Game());
                 } else {
-                  !controller.startedVersus.value ? Get.snackbar('Error',
-                      'El numero no puede tener digitos repetidos y debe tener entre 3 y 5 digitos',
-                      snackPosition: SnackPosition.BOTTOM) : Get.snackbar('Error','El numero debe tener ${controller.gameLength.value} digitos');
+                  !controller.startedVersus.value
+                      ? Get.snackbar('Error',
+                          'El numero no puede tener digitos repetidos y debe tener entre 3 y 5 digitos',
+                          snackPosition: SnackPosition.BOTTOM)
+                      : Get.snackbar('Error',
+                          'El numero debe tener ${controller.gameLength.value} digitos');
                 }
               },
               child: const Text('Start Game'),

@@ -1,3 +1,4 @@
+import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,7 +12,6 @@ class Game extends StatefulWidget {
 
 class _GameState extends State<Game> {
   GameController controller = Get.find();
-  final TextEditingController _controller = TextEditingController();
 
   void showInvalidDialog(context, String message) {
     showDialog<String>(
@@ -22,7 +22,7 @@ class _GameState extends State<Game> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(height: 15),
-                  Text(message),
+                  Text(message, style: const TextStyle(fontSize: 20)),
                   const SizedBox(height: 15),
                   TextButton(
                     onPressed: () {
@@ -37,12 +37,14 @@ class _GameState extends State<Game> {
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    controller.gameSetState.value = () {
+      setState(() {});
+    };
     return Scaffold(
         appBar: AppBar(
           title: Text(controller.getMode() == 'Solitario'
@@ -76,39 +78,27 @@ class _GameState extends State<Game> {
                   style: const TextStyle(fontSize: 30),
                 ),
               ),
-              Row(
-                children: List.generate(controller.number.length, (index) {
-                  setState(() {});
-                  return Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Text(
-                      controller.currentGame[index],
-                      style: const TextStyle(fontSize: 50),
-                    ),
-                  );
-                }),
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(controller.number.length,
+                        (index) => controller.numberPicker(context, index))),
               ),
               Container(
                   margin: const EdgeInsets.all(10),
-                  child: TextField(
-                    controller: _controller,
-                    // keyboardType: controller.getDifficulty() != "Letal" || controller.getMode() == 'Solitario'
-                    //     ? TextInputType.number
-                    //     : TextInputType.text,
-
-                    keyboardType: controller.getMode() == 'Versus' || controller.getDifficulty() == "Letal"
-                        ? TextInputType.text
-                        : TextInputType.number,
-                    decoration: const InputDecoration(
-                      hintText: 'Ingrese un numero (no digitos repetidos)',
-                    ),
-                  )),
-              Container(
-                  margin: const EdgeInsets.all(10),
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: controller.getCurrTry().contains("*")
+                            ? Colors.grey
+                            : Colors.blue),
                     onPressed: () {
-                      var win = controller.gameHandler(_controller.text);
-
+                      if (controller.getCurrTry().contains("*")) {
+                        return;
+                      }
+                      var win = controller.gameHandler(controller.getCurrTry());
+                      print("Current try: ${controller.getCurrTry()}");
+                      print("Current game: ${controller.getCurrenGame()}");
                       if (win) {
                         if (controller.startedVersus.value ||
                             controller.getMode() == 'Solitario') {
@@ -118,9 +108,8 @@ class _GameState extends State<Game> {
                           showInvalidDialog(context,
                               "Ganaste en ${controller.getTries()}\nGanador Jugador ${controller.getWinner()}");
                         }
-                      } else {
-                        setState(() {});
                       }
+                      setState(() {});
                     },
                     child: const Text('Probar'),
                   )),
@@ -132,8 +121,8 @@ class _GameState extends State<Game> {
                     if (winHint) {
                       if (controller.startedVersus.value ||
                           controller.getMode() == 'Solitario') {
-                        showInvalidDialog(
-                            context, "Ganaste en ${controller.getTries()}");
+                        showInvalidDialog(context,
+                            "Ganaste en ${controller.getTries()} intentos.");
                       } else {
                         showInvalidDialog(context,
                             "Ganaste en ${controller.getTries()}\nGanador Jugador ${controller.getWinner()}");

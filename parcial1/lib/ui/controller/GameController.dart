@@ -1,4 +1,7 @@
 import 'dart:math';
+import 'package:bottom_picker/bottom_picker.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parcial1/ui/pages/SelectNumber.dart';
 import '../pages/Game.dart';
@@ -9,6 +12,7 @@ class GameController extends GetxController {
   int difficulty = 0;
   String number = "";
   String currentGame = "";
+  String currTry = '';
   int cowsScore = 0;
   int bullsScore = 0;
   int triesCount = 0;
@@ -19,12 +23,32 @@ class GameController extends GetxController {
   var bPrevTries = 0.obs;
   var startedVersus = false.obs;
   var currentCows = [].obs;
+  var currentBulls = [].obs;
   var hintUsed = false;
   var gameLength = 0.obs;
-  var symbolLength = 0;
+  var symbolLength = 16;
 
-  var myhomeReset = () {}.obs;
-  var symbolPool = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
+  var symbolPool = [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F"
+  ];
+
+  var myhomeSetState = () {}.obs;
+  var gameSetState = () {}.obs;
 
   void setMode(int value) {
     mode = value;
@@ -40,15 +64,21 @@ class GameController extends GetxController {
         : difficulty == 2
             ? "****"
             : "*****";
+    currTry = "*" * currentGame.length;
     difficulty = value;
   }
 
   void setCurrentGame(String text) {
     currentGame = text;
+    currTry = "*" * currentGame.length;
   }
 
   int getTries() {
     return triesCount;
+  }
+
+  String getCurrTry() {
+    return currTry;
   }
 
   String getCurrPlayer() {
@@ -61,6 +91,10 @@ class GameController extends GetxController {
         : mode == 1
             ? "Solitario"
             : "Versus";
+  }
+
+  String getCurrenGame() {
+    return currentGame;
   }
 
   String getDifficulty() {
@@ -86,6 +120,84 @@ class GameController extends GetxController {
       default:
         return "Seleccione una dificultad";
     }
+  }
+
+  _openSimplePicker(BuildContext context, index) {
+    var items = [];
+    for (var i = 0; i < symbolLength; i++) {
+      if (!currTry.contains(symbolPool[i])) {
+        items.add(symbolPool[i]);
+      }
+    }
+
+    BottomPicker(
+      title: "Escoge un numero",
+      onSubmit: (value) {
+        currTry = currTry.replaceRange(index, index + 1, items[value]);
+        gameSetState.value();
+      },
+      onChange: (value) {
+        gameSetState.value();
+      },
+      onClose: () {
+        gameSetState.value();
+      },
+      items: List.generate(
+        items.length,
+        (index) {
+          return Text(
+            items[index],
+            style: TextStyle(fontSize: 20),
+          );
+        },
+      ),
+    ).show(context);
+  }
+  // Widget numberPicker(BuildContext context) {
+  //   return Container(
+  //     margin: const EdgeInsets.all(5),
+  //     child: ElevatedButton(
+  //       onPressed: () {
+  //         _openSimplePicker(context);
+  //       },
+  //       child: Text("*"),
+  //     )
+  //   );
+  // }
+
+  Widget numberPicker(BuildContext context, index) {
+    return Container(
+      margin: const EdgeInsets.all(5),
+      child: Material(
+        color: currTry[index] == "*"
+            ? Colors.grey
+            : currentBulls.contains(currentGame[index])
+                ? Colors.green
+                : Colors.blue,
+        borderRadius: BorderRadius.circular(4),
+        child: InkWell(
+          onTap: () {
+            if (currentBulls.contains(currentGame[index])) {
+              return;
+            }
+            _openSimplePicker(context, index);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Text(
+              currentBulls.contains(currentGame[index])
+                  ? currentGame[index]
+                  : currTry[index],
+              style: const TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   void validateGame() {
@@ -121,7 +233,6 @@ class GameController extends GetxController {
   }
 
   bool validateNumber(String userNumber) {
-
     var valid = true;
     userNumber = formatNumber(userNumber);
     for (var i = 0; i < userNumber.length; i++) {
@@ -184,7 +295,24 @@ class GameController extends GetxController {
     bullsScore = 0;
     currPlayer = currPlayer == "A" ? "B" : "A";
     currentCows.value = [];
-    symbolPool = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
+    symbolPool = [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ];
   }
 
   String getWinner() {
@@ -218,7 +346,7 @@ class GameController extends GetxController {
       }
     }
     resetGame();
-    myhomeReset.value();
+    myhomeSetState.value();
   }
 
   bool gameHandler(String userNumber) {
@@ -232,6 +360,7 @@ class GameController extends GetxController {
             if (i == j) {
               if (userNumber[i] == number[j]) {
                 currentGame = currentGame.replaceRange(i, i + 1, userNumber[i]);
+                currentBulls.value.add(userNumber[i]);
                 bullsScore++;
               }
             } else {
@@ -245,6 +374,7 @@ class GameController extends GetxController {
           }
         }
         triesCount++;
+        currTry = currentGame;
       } else {
         Get.snackbar("Error", "El numero debe tener ${number.length} digitos");
       }
@@ -266,6 +396,8 @@ class GameController extends GetxController {
     for (var i = 0; i < number.length; i++) {
       if (!currentGame.contains(number[i])) {
         currentGame = currentGame.replaceRange(i, i + 1, number[i]);
+        currTry = currTry.replaceRange(i, i + 1, number[i]);
+        currentBulls.value.add(number[i]);
         triesCount += 5;
         // if current game not contains * then return true
         if (!currentGame.contains("*")) {
