@@ -320,6 +320,7 @@ class GameController extends GetxController {
       "E",
       "F"
     ];
+    symbolLength = 16;
   }
 
   String getWinner() {
