@@ -1,9 +1,7 @@
-import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controller/GameController.dart';
-import 'MyHome.dart';
 
 class Game extends StatefulWidget {
   @override
