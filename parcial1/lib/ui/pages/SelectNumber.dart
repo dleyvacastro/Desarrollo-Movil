@@ -32,7 +32,13 @@ class _SelectNumberState extends State<SelectNumber> {
               margin: const EdgeInsets.all(10),
               child: TextField(
                 controller: _controller,
-                // keyboardType: controller.getDifficulty() != "Letal" ?  TextInputType.number : TextInputType.text,
+                onChanged: (value) {
+                  _controller.value = TextEditingValue(
+                    text: value.toUpperCase(),
+                    selection: _controller.selection,
+                  );
+                },
+                textCapitalization: TextCapitalization.characters,
                 decoration: const InputDecoration(
                   hintText: 'Ingrese un numero (no digitos repetidos)',
                 ),

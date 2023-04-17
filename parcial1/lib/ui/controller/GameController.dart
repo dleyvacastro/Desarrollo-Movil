@@ -3,6 +3,8 @@ import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parcial1/themes.dart';
+import 'package:bottom_picker/resources/arrays.dart';
 import 'package:parcial1/ui/pages/SelectNumber.dart';
 import '../pages/Game.dart';
 import '../pages/MyHome.dart';
@@ -147,10 +149,14 @@ class GameController extends GetxController {
         (index) {
           return Text(
             items[index],
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 20, color: currentCows.contains(items[index]) ? gameTheme.colorScheme.secondary : Colors.black, fontWeight: FontWeight.bold),
           );
         },
       ),
+      gradientColors: [
+        gameTheme.colorScheme.primary,
+        gameTheme.colorScheme.secondary,
+      ],
     ).show(context);
   }
   // Widget numberPicker(BuildContext context) {
@@ -169,12 +175,13 @@ class GameController extends GetxController {
     return Container(
       margin: const EdgeInsets.all(5),
       child: Material(
+
         color: currTry[index] == "*"
             ? Colors.grey
             : currentBulls.contains(currentGame[index])
-                ? Colors.green
-                : Colors.blue,
-        borderRadius: BorderRadius.circular(4),
+                ? gameTheme.colorScheme.secondary
+                : gameTheme.colorScheme.primary,
+        borderRadius: BorderRadius.circular(15),
         child: InkWell(
           onTap: () {
             if (currentBulls.contains(currentGame[index])) {

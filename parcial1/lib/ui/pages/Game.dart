@@ -48,7 +48,7 @@ class _GameState extends State<Game> {
     return Scaffold(
         appBar: AppBar(
           title: Text(controller.getMode() == 'Solitario'
-              ? 'Solitario'
+              ? 'Solitario - ${controller.getDifficulty()}'
               : 'Versus - Jugador ${controller.getCurrPlayer() == "A" ? "B" : "A"}'),
           automaticallyImplyLeading: false,
         ),
@@ -91,7 +91,7 @@ class _GameState extends State<Game> {
                     style: ElevatedButton.styleFrom(
                         primary: controller.getCurrTry().contains("*")
                             ? Colors.grey
-                            : Colors.blue),
+                            : Theme.of(context).primaryColor),
                     onPressed: () {
                       if (controller.getCurrTry().contains("*")) {
                         return;
@@ -103,10 +103,10 @@ class _GameState extends State<Game> {
                         if (controller.startedVersus.value ||
                             controller.getMode() == 'Solitario') {
                           showInvalidDialog(
-                              context, "Ganaste en ${controller.getTries()}");
+                              context, "Ganaste en ${controller.getTries()} intentos.");
                         } else {
                           showInvalidDialog(context,
-                              "Ganaste en ${controller.getTries()}\nGanador Jugador ${controller.getWinner()}");
+                              "Ganaste en ${controller.getTries()} intentos.\nGanador Jugador ${controller.getWinner()}");
                         }
                       }
                       setState(() {});
@@ -125,7 +125,7 @@ class _GameState extends State<Game> {
                             "Ganaste en ${controller.getTries()} intentos.");
                       } else {
                         showInvalidDialog(context,
-                            "Ganaste en ${controller.getTries()}\nGanador Jugador ${controller.getWinner()}");
+                            "Ganaste en ${controller.getTries()} intentos\nGanador Jugador ${controller.getWinner()}");
                       }
                     }
                     setState(() {});
