@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Totally not a spyware.'),
+      home: const MyHomePage(title: 'Totally not a spyware. That uses material 3'),
     );
   }
 }
